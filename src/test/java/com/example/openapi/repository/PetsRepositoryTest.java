@@ -25,7 +25,6 @@ public class PetsRepositoryTest {
         petsRepository.save(entity);
 
         final List<Pets> petList = petsRepository.findByName("beer");
-
         assertThat(petList).size().isEqualTo(1);
         assertThat(petList.get(0).getName()).isEqualTo("beer");
 

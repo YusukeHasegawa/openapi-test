@@ -73,6 +73,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pets"
+        '404':
+          description: not found
         default:
           description: unexpected error
           content:

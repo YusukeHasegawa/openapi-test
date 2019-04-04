@@ -2,6 +2,8 @@ package com.example.openapi.web.api;
 
 import com.example.openapi.web.model.NewPet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -46,13 +48,27 @@ public class PetsApiControllerTest2 {
         webClient.get().uri("/pets").exchange().expectStatus().isOk();
     }
 
-    @Test
-    public void showPetById() {
+    @ParameterizedTest
+    @ValueSource(strings = {"India","Brazil"})
+    public void showPetById(final String name) {
         final EntityExchangeResult<List> res = webClient.get()
-                .uri("/pets/{name}", "India")
+                .uri("/pets/{name}", name)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(List.class).returnResult();
-        assertThat(((Map) res.getResponseBody().get(0)).get("name")).isEqualTo("India");
+        assertThat( ((Map) res.getResponseBody().get(0)).get("name"))
+                .isEqualTo(name);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"beer"})
+    public void showPetById_みつからない(final String name) {
+        final EntityExchangeResult<List> res = webClient.get()
+                .uri("/pets/{name}", name)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(List.class).returnResult();
+
+        assertThat(res.getResponseBody()).isNull();
     }
 }

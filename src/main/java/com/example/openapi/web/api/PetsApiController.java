@@ -59,7 +59,12 @@ public class PetsApiController implements PetsApi {
     @Override
     public ResponseEntity<List<Pet>> showPetById(
             @PathVariable("petId") final String petId) {
-        return ResponseEntity.ok(petsRepository.findByName(petId).stream().map(petMapper::petsToPet).collect(Collectors.toList()));
+        final List<Pets> pets = petsRepository.findByName(petId);
+        if(!pets.isEmpty()){
+            return ResponseEntity.ok(pets.stream().map(petMapper::petsToPet).collect(Collectors.toList()));
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
