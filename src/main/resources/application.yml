@@ -1,0 +1,17 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  http:
+    log-request-details: true
+  output:
+    ansi:
+      enabled: ALWAYS
+
+
+logging:
+  level:
+    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+
+
+

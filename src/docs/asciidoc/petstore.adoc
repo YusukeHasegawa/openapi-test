@@ -1,0 +1,4 @@
+include::{generated}/userinfo/overview.adoc[]
+include::{generated}/userinfo/security.adoc[]
+include::{generated}/userinfo/paths.adoc[]
+include::{generated}/userinfo/definitions.adoc[]
