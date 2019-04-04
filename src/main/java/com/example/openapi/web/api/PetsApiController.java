@@ -49,22 +49,10 @@ public class PetsApiController implements PetsApi {
                 .build();
     }
 
-    /********************************
-     @ApiOperation(value = "", nickname = "createPets2", notes = "", tags={ "pets", })
-     @ApiResponses(value = {
-     @ApiResponse(code = 200, message = "foo") })
-     *******************************
-     * @param newPet*/
-
     @Override
     public ResponseEntity<List<Pet>> listPets(
             @Valid @RequestParam(value = "limit", required = false) final Integer limit) {
-        return ResponseEntity.ok(petsRepository.findAll().stream().map(mapper -> {
-            Pet pet;// = new Pet();
-            //BeanUtils.copyProperties(mapper, pet);
-            pet = petMapper.petsToPet(mapper);
-            return pet;
-        }).collect(Collectors.toList()));
+        return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
 
     }
 
