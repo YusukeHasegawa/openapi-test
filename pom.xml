@@ -121,6 +121,17 @@
             <artifactId>swagger-core</artifactId>
             <version>2.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.22</version>
+        </dependency>
 
     </dependencies>
 
@@ -204,7 +215,6 @@
                             <apiPackage>com.example.openapi.web.api</apiPackage>
                             <modelPackage>com.example.openapi.web.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>
-                            <templateDirectory>${project.basedir}/openapi-codegen</templateDirectory>
                             <configOptions>
                                 <java8>false</java8>
                                 <useTags>true</useTags>
