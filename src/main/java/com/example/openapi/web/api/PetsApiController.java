@@ -11,9 +11,13 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
+import org.zalando.problem.StatusType;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -60,10 +64,11 @@ public class PetsApiController implements PetsApi {
     public ResponseEntity<List<Pet>> showPetById(
             @PathVariable("petId") final String petId) {
         final List<Pets> pets = petsRepository.findByName(petId);
+
         if(!pets.isEmpty()){
             return ResponseEntity.ok(pets.stream().map(petMapper::petsToPet).collect(Collectors.toList()));
         }else{
-            return ResponseEntity.notFound().build();
+            throw Problem.valueOf(Status.NOT_FOUND);
         }
     }
 

@@ -133,6 +133,12 @@
             <version>1.5.22</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.zalando/problem-spring-web -->
+        <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>problem-spring-web</artifactId>
+            <version>0.23.0</version>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>
@@ -211,7 +217,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/docs/openapi/petstore.yaml</inputSpec>
-                            <language>spring</language>
+                            <generatorName>spring</generatorName>
                             <apiPackage>com.example.openapi.web.api</apiPackage>
                             <modelPackage>com.example.openapi.web.model</modelPackage>
                             <generateSupportingFiles>false</generateSupportingFiles>

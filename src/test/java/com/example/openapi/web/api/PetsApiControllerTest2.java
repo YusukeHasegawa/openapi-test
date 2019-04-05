@@ -11,9 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,26 +54,28 @@ public class PetsApiControllerTest2 {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"India","Brazil"})
+    @ValueSource(strings = {"India", "Brazil"})
     public void showPetById(final String name) {
         final EntityExchangeResult<List> res = webClient.get()
                 .uri("/pets/{name}", name)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(List.class).returnResult();
-        assertThat( ((Map) res.getResponseBody().get(0)).get("name"))
+        assertThat(((Map) res.getResponseBody().get(0)).get("name"))
                 .isEqualTo(name);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"beer"})
     public void showPetById_みつからない(final String name) {
-        final EntityExchangeResult<List> res = webClient.get()
+        final EntityExchangeResult<Problem> res = webClient.get()
                 .uri("/pets/{name}", name)
                 .exchange()
                 .expectStatus().isNotFound()
-                .expectBody(List.class).returnResult();
+                .expectBody(Problem.class).returnResult();
 
-        assertThat(res.getResponseBody()).isNull();
+        assertThat(res.getResponseBody().getStatus())
+                .isEqualTo(Status.NOT_FOUND);
+
     }
 }

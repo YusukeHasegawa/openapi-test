@@ -34,11 +34,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Pets"
         default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: unexpected error. see org.zalando.problem
+
     post:
       summary: Create a pet
       operationId: createPets
@@ -48,11 +45,8 @@ paths:
         '201':
           description: Null response
         default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: unexpected error. see org.zalando.problem
+
   /pets/{petId}:
     get:
       summary: Info for a specific pet
@@ -73,14 +67,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pets"
-        '404':
-          description: not found
         default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: unexpected error. see org.zalando.problem
+
   /pets2:
     post:
       operationId: createPets2
@@ -92,8 +81,10 @@ paths:
             schema:
               $ref: '#/components/schemas/NewPet'
       responses:
-        '200':
-          description: foo
+        '201':
+          description: success
+        default:
+          description: unexpected error. see org.zalando.problem
 
 components:
   schemas:
@@ -119,16 +110,7 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Pet"
-    Error:
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+
           
           
           
