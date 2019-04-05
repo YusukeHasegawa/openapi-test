@@ -9,15 +9,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-import org.zalando.problem.StatusType;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class PetsApiController implements PetsApi {
 
     AtomicInteger i = new AtomicInteger();
 
+    //https://github.com/spring-projects/spring-framework/issues/15682
+    //5.1でsuper classのアノテーション見てくれるようになった模様　@RequestBody はなくてもよい
     @Override
     public ResponseEntity<Void> createPets2(@Valid @RequestBody final NewPet newPet) {
         final Pets pet = petsRepository.save(petMapper.newPetToPets(newPet));
@@ -40,6 +43,11 @@ public class PetsApiController implements PetsApi {
                 .created(MvcUriComponentsBuilder.fromMethodName(PetsApiController.class,
                         "showPetById", pet.getId().toString()).build().toUri())
                 .build();
+    }
+
+    @Override
+    public ResponseEntity<List<Pet>> listPets(@Max(100) @Valid final Integer limit) {
+        return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
     }
 
     @Override
@@ -53,21 +61,14 @@ public class PetsApiController implements PetsApi {
                 .build();
     }
 
-    @Override
-    public ResponseEntity<List<Pet>> listPets(
-            @Valid @RequestParam(value = "limit", required = false) final Integer limit) {
-        return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
-
-    }
 
     @Override
-    public ResponseEntity<List<Pet>> showPetById(
-            @PathVariable("petId") final String petId) {
+    public ResponseEntity<List<Pet>> showPetById(final String petId) {
         final List<Pets> pets = petsRepository.findByName(petId);
 
-        if(!pets.isEmpty()){
+        if (!pets.isEmpty()) {
             return ResponseEntity.ok(pets.stream().map(petMapper::petsToPet).collect(Collectors.toList()));
-        }else{
+        } else {
             throw Problem.valueOf(Status.NOT_FOUND);
         }
     }
