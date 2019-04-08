@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.zalando.problem.Problem;
@@ -37,12 +36,10 @@ public class PetsApiController implements PetsApi {
     //https://github.com/spring-projects/spring-framework/issues/15682
     //5.1でsuper classのアノテーション見てくれるようになった模様　@RequestBody はなくてもよい
     @Override
-    public ResponseEntity<Void> createPets2(@Valid @RequestBody final NewPet newPet) {
+    public ResponseEntity<Void> createPets2(@Valid final NewPet newPet) {
         final Pets pet = petsRepository.save(petMapper.newPetToPets(newPet));
         return ResponseEntity
-                .created(MvcUriComponentsBuilder.fromMethodName(PetsApiController.class,
-                        "showPetById", pet.getId().toString()).build().toUri())
-                .build();
+                .created(MvcUriComponentsBuilder.fromController(PetsApiController.class).path("/pets/{petId}").buildAndExpand(pet.getName()).toUri()).build();
     }
 
     @Override
@@ -50,15 +47,19 @@ public class PetsApiController implements PetsApi {
         return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
     }
 
+
     @Override
     public ResponseEntity<Void> createPets() {
         final Pets entity = new Pets();
         entity.setName("taro " + i.incrementAndGet());
-        System.out.println(petsRepository.save(entity));
+        petsRepository.save(entity);
         return ResponseEntity
-                .created(MvcUriComponentsBuilder.fromMethodName(PetsApiController.class,
-                        "showPetById", entity.getId().toString()).build().toUri())
-                .build();
+                .created(
+                        // super classのPathVariableを認識しない
+//                        MvcUriComponentsBuilder.fromMethodName(PetsApiController.class,
+//                        "showPetById", entity.getName()).build().toUri()
+                        MvcUriComponentsBuilder.fromController(PetsApiController.class).path("/pets/{petId}").buildAndExpand(entity.getName()).toUri()
+                ).build();
     }
 
 

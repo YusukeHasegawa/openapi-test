@@ -81,6 +81,11 @@ public class PetsApiControllerTest {
     }
 
     @Test
+    public void listPets_limit() throws Exception {
+        mockMvc.perform(get("/pets").param("limit", "101")).andExpect(status().isBadRequest()).andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     public void showPetById() throws Exception {
         final List<Pets> pets = new ArrayList<>();
         pets.add(new Pets(1L, "India", null));

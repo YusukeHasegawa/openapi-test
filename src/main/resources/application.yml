@@ -13,4 +13,3 @@ logging:
     org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
 
 
-
