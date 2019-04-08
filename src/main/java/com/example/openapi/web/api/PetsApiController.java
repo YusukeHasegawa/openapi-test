@@ -17,6 +17,7 @@ import org.zalando.problem.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -42,11 +43,11 @@ public class PetsApiController implements PetsApi {
                 .created(MvcUriComponentsBuilder.fromController(PetsApiController.class).path("/pets/{petId}").buildAndExpand(pet.getName()).toUri()).build();
     }
 
+
     @Override
-    public ResponseEntity<List<Pet>> listPets(@Max(100) @Valid final Integer limit) {
+    public ResponseEntity<List<Pet>> listPets(@Min(1) @Max(100) @Valid final Integer limit) {
         return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
     }
-
 
     @Override
     public ResponseEntity<Void> createPets() {

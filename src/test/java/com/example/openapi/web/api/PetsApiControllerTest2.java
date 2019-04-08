@@ -6,9 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import org.springframework.test.web.reactive.server.HeaderAssertions;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.zalando.problem.Problem;
@@ -27,6 +29,9 @@ public class PetsApiControllerTest2 {
     @Autowired
     private WebTestClient webClient;
 
+    @LocalServerPort
+    private int port;
+
     @Test
     public void createPets() {
         webClient.post().uri("/pets").exchange().expectStatus().isCreated();
@@ -36,11 +41,16 @@ public class PetsApiControllerTest2 {
     public void createPets2() {
         final NewPet newPet = new NewPet();
         newPet.setName("foo");
-        webClient.post()
+        final HeaderAssertions header = webClient.post()
                 .uri("/pets2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(newPet))
-                .exchange().expectStatus().isCreated();
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectHeader();
+
+        header.valueEquals("Location", "http://localhost:" + port + "/pets/foo");
     }
 
     @Test

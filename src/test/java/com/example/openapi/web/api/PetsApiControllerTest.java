@@ -5,7 +5,11 @@ import com.example.openapi.repository.PetsRepository;
 import com.example.openapi.web.mapper.PetMapper;
 import com.example.openapi.web.model.NewPet;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -44,6 +49,7 @@ public class PetsApiControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @DisplayName("ペットの作成")
     public void createPets() throws Exception {
         given(petsRepository.save(new Pets().setName("taro 1"))).willAnswer(invocation -> {
             final Pets p = invocation.getArgument(0);
@@ -52,9 +58,7 @@ public class PetsApiControllerTest {
         });
         mockMvc.perform(post("/pets")).andExpect(status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
-        // Pets s = new Pets();
-        // s.setName("taro 1");
-        then(petsRepository).should(times(1)).save(new Pets().setId(1L).setName("taro 1"));
+        then(petsRepository).should(times(1)).save(any());
     }
 
     @Test
@@ -75,14 +79,21 @@ public class PetsApiControllerTest {
         then(petsRepository).should(times(1)).save(new Pets().setId(1L).setName("foo"));
     }
 
-    @Test
-    public void listPets() throws Exception {
-        mockMvc.perform(get("/pets")).andExpect(status().isOk());
-    }
+    @Nested
+    @DisplayName("ペットリスト")
+    class ListPets {
+        @Test
+        public void listPets() throws Exception {
+            mockMvc.perform(get("/pets")).andExpect(status().isOk());
+        }
 
-    @Test
-    public void listPets_limit() throws Exception {
-        mockMvc.perform(get("/pets").param("limit", "101")).andExpect(status().isBadRequest()).andDo(MockMvcResultHandlers.print());
+        @ParameterizedTest
+        @ValueSource(strings = {"101", "0"})
+        public void listPets_limit(String limit) throws Exception {
+            mockMvc.perform(get("/pets").param("limit", limit))
+                    .andExpect(status().isBadRequest())
+                    .andDo(MockMvcResultHandlers.print());
+        }
     }
 
     @Test
