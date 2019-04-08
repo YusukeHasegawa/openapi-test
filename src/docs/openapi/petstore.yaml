@@ -21,6 +21,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 1
             maximum: 100
             minimum: 1
       responses:

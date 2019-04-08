@@ -8,6 +8,7 @@ import com.example.openapi.web.model.Pet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.PageRequest.of;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -43,10 +47,15 @@ public class PetsApiController implements PetsApi {
                 .created(MvcUriComponentsBuilder.fromController(PetsApiController.class).path("/pets/{petId}").buildAndExpand(pet.getName()).toUri()).build();
     }
 
-
     @Override
     public ResponseEntity<List<Pet>> listPets(@Min(1) @Max(100) @Valid final Integer limit) {
-        return ResponseEntity.ok(petsRepository.findAll().stream().map(petMapper::petsToPet).collect(Collectors.toList()));
+        return ResponseEntity.ok(
+                Optional.ofNullable(petsRepository.findAll(of(0, limit)))
+                        //.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND))
+                        .orElseGet(Page::empty)
+                        .stream()
+                        .map(petMapper::petsToPet).collect(Collectors.toList())
+        );
     }
 
     @Override
