@@ -29,4 +29,13 @@ public class PetsRepositoryTest {
         assertThat(petList.get(0).getName()).isEqualTo("beer");
 
     }
+
+    @Test
+    public void saveTest(){
+        final Pets pets = new Pets();
+        pets.setName("foo");
+        petsRepository.save(pets);
+        assertThat(pets.getId()).isNotNull();
+    }
+
 }

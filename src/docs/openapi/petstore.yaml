@@ -89,6 +89,50 @@ paths:
         default:
           description: unexpected error. see org.zalando.problem
 
+  /foo/{id}:
+    get:
+      operationId: get
+      tags:
+        - foo
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: get pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        default:
+          description: unexpected error. see org.zalando.problem
+  /foo:
+    post:
+      description: create pets
+      operationId: post
+      tags:
+        - foo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPet"
+      responses:
+        '201':
+          description: created
+          headers:
+            'Location' :
+              description: new pet details url
+              schema:
+                type: string
+
+
+
+
 components:
   schemas:
     NewPet:
