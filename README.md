@@ -3,7 +3,7 @@
 
 てすと :beer:
 
-
+てすと :sake:
 
 ### Guides
 The following guides illustrates how to use certain features concretely:
