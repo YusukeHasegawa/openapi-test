@@ -129,9 +129,30 @@ paths:
               description: new pet details url
               schema:
                 type: string
-
-
-
+    get:
+      description: gett pet list
+      operationId: list
+      tags:
+        - foo
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 1
+            minimum: 1
+            maximum: 500
+      responses:
+        '200':
+          description: pet list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pets"
+        default:
+          description: error
 
 components:
   schemas:

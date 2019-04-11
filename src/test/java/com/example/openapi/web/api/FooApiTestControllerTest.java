@@ -1,6 +1,7 @@
 package com.example.openapi.web.api;
 
 import com.example.openapi.web.model.NewPet;
+import com.example.openapi.web.model.Pet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,8 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,8 +49,9 @@ public class FooApiTestControllerTest {
         @Test
         @DisplayName("パラメータ無し")
         public void getTest_パラメータ無し() throws Exception {
-            mockMvc.perform(get("/foo"))
-                    .andExpect(status().is4xxClientError());
+            mockMvc.perform(get("/foo/"))
+                    .andExpect(status().is4xxClientError())
+                    .andDo(MockMvcResultHandlers.print());
         }
 
         @ParameterizedTest
@@ -76,4 +80,41 @@ public class FooApiTestControllerTest {
         }
     }
 
+    @Nested
+    class Lists {
+        @DisplayName("パラメータの件数分Petのリストを返却する")
+        @Test
+        public void getTest() throws Exception {
+            final MvcResult result = mockMvc.perform(get("/foo").param("limit", "2"))
+                    .andExpect(status().isOk())
+//                    .andExpect(jsonPath("$.length()").value(2))
+//                    .andExpect(jsonPath("$[0].name").isNotEmpty())
+//                    .andExpect(jsonPath("$[0].id").isNotEmpty())
+//                    .andExpect(jsonPath("$[0].tag").hasJsonPath())
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn();
+
+            final Pet[] pets = objectMapper.readValue(result.getResponse().getContentAsString(), Pet[].class);
+            assertThat(pets).hasSize(2);
+            assertThat(pets[0].getName()).isNotBlank();
+            assertThat(pets[0].getId()).isNotNull();
+        }
+
+        @DisplayName("パラメータが 1 <= limit <= 500 以外の時400")
+        @ParameterizedTest
+        @ValueSource(strings = {"0", "501"})
+        public void invalidParamTest(String limit) throws Exception {
+            mockMvc.perform(get("/foo").param("limit", limit))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @DisplayName("パラメータがない場合は1件")
+        @Test
+        public void defaultParamTest() throws Exception {
+            mockMvc.perform(get("/foo"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+            ;
+        }
+    }
 }
