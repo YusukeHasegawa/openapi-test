@@ -1,7 +1,7 @@
 # Getting Started
 
 
-てすと :beer:
+:beer: てすと :beer:
 
 
 
