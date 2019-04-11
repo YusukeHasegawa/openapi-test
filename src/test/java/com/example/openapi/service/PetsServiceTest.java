@@ -30,4 +30,18 @@ class PetsServiceTest {
         System.out.println(petsService.getPet(id));
         assertThat(petsService.getPet(id)).isNotNull();
     }
+
+    @Test
+    void getPets() {
+        assertThat(petsService.getPets(2)).hasSize(2);
+    }
+
+    @Test
+    void deletePets(){
+        Long id = 1L;
+        petsService.deletePets(id);
+
+        assertThat(petsService.getPet(id)).isNull();
+
+    }
 }

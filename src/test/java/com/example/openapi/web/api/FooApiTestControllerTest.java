@@ -3,6 +3,7 @@ package com.example.openapi.web.api;
 import com.example.openapi.web.model.NewPet;
 import com.example.openapi.web.model.Pet;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tracing.dtrace.ProviderAttributes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -114,6 +114,30 @@ public class FooApiTestControllerTest {
             mockMvc.perform(get("/foo"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()").value(1))
+            ;
+        }
+    }
+
+    @Nested
+    class Delete {
+
+        @DisplayName("idを指定して削除する")
+        @Test
+        public void deleteTest() throws Exception {
+            Long id = 1L;
+            mockMvc.perform(delete("/foo/{id}", id))
+                    .andExpect(status().isNoContent())
+                    .andDo(MockMvcResultHandlers.print())
+            ;
+        }
+
+        @DisplayName("idのバリデーション")
+        @ParameterizedTest
+        @ValueSource(strings = {"0", "-1", "foo", ""})
+        public void deleteTest(String id) throws Exception {
+            mockMvc.perform(delete("/foo/{id}", id))
+                    .andExpect(status().is4xxClientError())
+                    .andDo(MockMvcResultHandlers.print())
             ;
         }
     }

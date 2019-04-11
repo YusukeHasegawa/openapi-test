@@ -25,6 +25,12 @@ public class FooApiController implements FooApi {
     }
 
     @Override
+    public ResponseEntity<Void> delete(@Min(1L) Long id) {
+        petsService.deletePets(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<Pet> get(@Min(1L) final Long id) {
         return ResponseEntity.ok(petsService.getPet(id));
     }

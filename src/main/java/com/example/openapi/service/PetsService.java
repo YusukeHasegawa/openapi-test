@@ -37,4 +37,8 @@ public class PetsService {
         return Optional.ofNullable(petsRepository.findAll(pageable).stream().map(petMapper::petsToPet).collect(Collectors.toList()))
                 .orElseGet(Collections::emptyList);
     }
+
+    public void deletePets(Long id) {
+        petsRepository.deleteById(id);
+    }
 }

@@ -97,6 +97,7 @@ paths:
       parameters:
         - name: id
           in: path
+          required: true
           schema:
             type: integer
             format: int64
@@ -110,6 +111,24 @@ paths:
                 $ref: '#/components/schemas/Pet'
         default:
           description: unexpected error. see org.zalando.problem
+    delete:
+      operationId: delete
+      tags:
+        - foo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '204':
+          description: delete success
+        default:
+          description: unexpected error. see org.zalando.problem
+
   /foo:
     post:
       description: create pets
