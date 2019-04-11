@@ -1,7 +1,7 @@
 # Getting Started
 
 
-	てすと2
+	てすと:beer:
 
 
 
