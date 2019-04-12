@@ -4,9 +4,7 @@ import com.example.openapi.web.model.NewPet;
 import com.example.openapi.web.model.Pet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.tracing.dtrace.ProviderAttributes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitConfig
 @SpringBootTest
 @AutoConfigureMockMvc
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FooApiTestControllerTest {
 
     @Autowired
@@ -124,7 +123,7 @@ public class FooApiTestControllerTest {
         @DisplayName("idを指定して削除する")
         @Test
         public void deleteTest() throws Exception {
-            Long id = 1L;
+            Long id = 2L;
             mockMvc.perform(delete("/foo/{id}", id))
                     .andExpect(status().isNoContent())
                     .andDo(MockMvcResultHandlers.print())

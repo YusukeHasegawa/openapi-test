@@ -7,7 +7,6 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  mvc:
 
 logging:
   level:

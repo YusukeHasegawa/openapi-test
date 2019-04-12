@@ -1,6 +1,9 @@
 package com.example.openapi.repository;
 
 import com.example.openapi.domain.Pets;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,4 +41,13 @@ public class PetsRepositoryTest {
         assertThat(pets.getId()).isNotNull();
     }
 
+    @BeforeEach
+    public void beforeEach(){
+        System.out.println("before each");
+    }
+
+    @BeforeAll
+    public static void beforeAll(){
+        System.out.println("before all");
+    }
 }
