@@ -10,14 +10,6 @@ public class OpenApiApplicationTests {
 
     @Test
     public void contextLoads() {
-        // master
-        // master
-        // test
-        // master
-        // master
-        // master
-        // master
-        // master
     }
 
 }
