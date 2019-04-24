@@ -108,4 +108,14 @@ public class PetsApiControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    public void showPetById_NotFound() throws Exception {
+        final List<Pets> pets = new ArrayList<>();
+        pets.add(new Pets(1L, "India", null));
+        given(petsRepository.findByName("India")).willReturn(pets);
+
+        mockMvc.perform(get("/pets/{name}", ":sake:"))
+                .andExpect(status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
